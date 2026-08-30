@@ -12,16 +12,16 @@ program main
   ! for triaaa
   real(KIND=wp) :: r12, r13, r23
 
-  r = 4.9406564584124654E-3
+  r = 6.0_wp
   call diat12(r, ener, der_1d)
   print *, "diat12 input: ", r
   print *, "diat12%ener: ", ener
   print *, "diat12%der_1d: ", der_1d
   print *, ""
 
-  r12 = 0.0028739_wp
-  r13 = 0.0098706_wp
-  r23 = 0.0064505_wp
+  r12 = r
+  r13 = 7.40065_wp
+  r23 = 1.40065_wp
 
   call triaaa(r12, r13, r23, ener, der_3d)
   print *, "triaaa input: ", r12, r13, r23

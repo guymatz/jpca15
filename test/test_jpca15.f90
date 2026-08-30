@@ -19,7 +19,7 @@ contains
     !  for logging
     character(len=100) :: log_msg
     call global_logger%configure(indent=.true., max_width=100)
-    call global_logger%configure(level = NONE_LEVEL)
+    call global_logger%configure(level = ALL_LEVEL)
 
     testsuite = [&
                   new_unittest("diat12_der", test_diat12_der), &
@@ -27,7 +27,8 @@ contains
                   new_unittest("triaaa_der", test_triaaa_der), &
                   new_unittest("triaaa_ener", test_triaaa_ener), &
                   new_unittest("jpca15_subr_e", test_jpca15_subr_e), &
-                  new_unittest("jpca15_der", test_jpca15_subr_der) &
+                  new_unittest("jpca15_der", test_jpca15_subr_der), &
+                  new_unittest("jpca15_comp_pe_jiggle_Ax", test_jpca15_comp_pe_jiggle_Ax) &
     ]
   end subroutine collect_jpca15
 
@@ -236,6 +237,43 @@ contains
     end do
   end subroutine test_jpca15_subr_der
 
+  subroutine test_jpca15_comp_pe_jiggle_Ax(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    integer :: input, output, stat
+    real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
+    real :: delta = 0.0001
+    real(kind=wp), DIMENSION(3) :: ser_delta
+    real(kind=wp), DIMENSION(3) :: der_3d, der_delta_3d
+    real(kind=wp) :: e, e_delta
+    real(kind=wp) :: tol = 0.01_wp
+    integer :: i
+    character(len=100) :: log_msg
+    open(newunit=input, status="scratch")
+
+    call comp_pe(ser, e, der_3d)
+    write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe ser:", ser
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F12.5)'), "jpca15%comp_pe e:", e
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe der_3d", der_3d
+    call global_logger%log_warning(log_msg)
+
+    ser_delta =  (/ser(1) - delta, ser(2) - delta, ser(3) /)
+    call comp_pe(ser_delta, e_delta, der_delta_3d)
+    write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe ser_delta:", ser_delta
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F12.5)'), "jpca15%comp_pe e_delta:", e_delta
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe der_delta_3d", der_delta_3d
+    call global_logger%log_warning(log_msg)
+
+    do i = 1, size(der_3d)
+        write(log_msg, '(A, 3F12.5)'), "(e_delta - e) / delta", (e_delta - e) / delta
+        call global_logger%log_warning(log_msg)
+        call check(error, (e_delta - e) / delta, der_3d(i), thr=tol)
+    end do
+  end subroutine test_jpca15_comp_pe_jiggle_Ax
 
 end module test_jpca15
 
