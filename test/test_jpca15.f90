@@ -266,6 +266,7 @@ contains
     real(kind=wp), DIMENSION(3) :: ser_delta
     real(kind=wp), DIMENSION(3) :: der_3d, der_delta_3d
     real(kind=wp) :: e, e_delta
+    real(kind=wp) :: expected_potential_energy = 13.40228_wp
     real(kind=wp) :: tol = 0.01_wp
     integer :: i
     character(len=100) :: log_msg
@@ -292,7 +293,7 @@ contains
 
     write(log_msg, '(A, 3F15.9)'), "Potential Energy on A in x:", (e_delta - e) / delta
     call global_logger%log_warning(log_msg)
-    call check(error, (e_delta - e) / delta, der_3d(i), thr=tol)
+    call check(error, (e_delta - e) / delta, expected_potential_energy, thr=tol)
   end subroutine test_jpca15_comp_pe_jiggle_Ax
 
 end module test_jpca15

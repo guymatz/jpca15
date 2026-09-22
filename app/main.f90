@@ -4,6 +4,7 @@ program main
   implicit none
 
   ! for comp_pe
+  real(KIND=wp), dimension(3) :: p1, p2, p3
   real(KIND=wp), dimension(3) :: ser, der_3d
   real(KIND=wp) :: e
   ! for diat12
@@ -12,16 +13,18 @@ program main
   ! for triaaa
   real(KIND=wp) :: r12, r13, r23
 
-  r = 6.0_wp
-  call diat12(r, ener, der_1d)
-  print *, "diat12 input: ", r
+  p1 = (/-6.0,     0.0, 0.0/)
+  p2 = (/ 0.0,     0.0, 0.0/)
+  p3 = (/ 1.40065, 0.0, 0.0/)
+  r12 = norm2(p1 - p2)
+  r13 = norm2(p1 - p3)
+  r23 = norm2(p2 - p3)
+
+  print *, "diat12 input: ", r12
+  call diat12(r12, ener, der_1d)
   print *, "diat12%ener: ", ener
   print *, "diat12%der_1d: ", der_1d
   print *, ""
-
-  r12 = r
-  r13 = 7.40065_wp
-  r23 = 1.40065_wp
 
   call triaaa(r12, r13, r23, ener, der_3d)
   print *, "triaaa input: ", r12, r13, r23
