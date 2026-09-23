@@ -266,11 +266,12 @@ contains
     real(kind=wp), DIMENSION(3) :: ser_delta
     real(kind=wp), DIMENSION(3) :: der_3d, der_delta_3d
     real(kind=wp) :: e, e_delta
-    real(kind=wp) :: expected_potential_energy = 13.40228_wp
+    real(kind=wp) :: expected_force_Ax = 13.40228_wp
     real(kind=wp) :: tol = 0.01_wp
     integer :: i
     character(len=100) :: log_msg
 
+    ! First we compute the potential energy in the system
     call comp_pe(ser, e, der_3d)
     write(log_msg, '(A, F15.5)'), "jpca15%comp_pe delta:", delta
     call global_logger%log_warning(log_msg)
@@ -281,6 +282,9 @@ contains
     write(log_msg, '(A, 3F15.9)'), "jpca15%comp_pe der_3d", der_3d
     call global_logger%log_warning(log_msg)
 
+    ! Now we jiggle atom A in the x direction, decreasing the distance
+    ! between atoms AB & AC by delta.  The distance between BC - ser(3) -
+    ! remains constant
     ser_delta =  (/ser(1) - delta, ser(2) - delta, ser(3) /)
     call comp_pe(ser_delta, e_delta, der_delta_3d)
     write(log_msg, '(A, 3F15.9)'), "jpca15%comp_pe ser_delta:", ser_delta
@@ -290,11 +294,11 @@ contains
     write(log_msg, '(A, 3F15.9)'), "jpca15%comp_pe der_delta_3d", der_delta_3d
     call global_logger%log_warning(log_msg)
 
-    write(log_msg, '(A, 3F15.9)'), "Potential Energy on A in x:", (e_delta - e) / delta
+    write(log_msg, '(A, 3F15.9)'), "Force on A in x:", (e_delta - e) / delta
     call global_logger%log_warning(log_msg)
     ! I *think* these two should be equal!!!
-    call check(error, (e_delta - e) / delta, expected_potential_energy, thr=tol)
-    call check(error, (der_delta_3d(1) - der_3d(1)) / delta, expected_potential_energy, thr=tol)
+    call check(error, (e_delta - e) / delta, expected_force_Ax, thr=tol)
+    call check(error, (der_delta_3d(1) - der_3d(1)) / delta, expected_force_Ax, thr=tol)
   end subroutine test_jpca15_comp_pe_jiggle_Ax
 
 end module test_jpca15
