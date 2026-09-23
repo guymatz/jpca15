@@ -44,18 +44,7 @@ contains
     real(kind=wp) :: ener
     real(kind=wp) :: tol = 0.01_wp
 
-    open(newunit=input, status="scratch")
-    write(input, '(a)') "This is a valid test"
-    rewind(input)
-
-    open(newunit=output, status="scratch")
     call triaaa(triaaa_r12, triaaa_r13, triaaa_r23, ener, der_3d)
-    close(input)
-
-    rewind(output)
-    !call get_line(output, line, stat)
-    close(output)
-
     call check(error, ener, triaaa_ener, thr=tol)
   end subroutine test_triaaa_ener
 
@@ -72,57 +61,37 @@ contains
     real(kind=wp) :: ener
     real(kind=wp) :: tol = 0.01_wp
     character(len=100) :: log_msg
-    open(newunit=input, status="scratch")
-    write(input, '(a)') "This is a valid test"
-    rewind(input)
 
-    open(newunit=output, status="scratch")
     call triaaa(triaaa_r12, triaaa_r13, triaaa_r23, ener, der_3d)
-    close(input)
-
-    rewind(output)
-    !call get_line(output, line, stat)
-    close(output)
 
     write(log_msg, '(A, F15.5, F15.5, F15.5)'), "jpca15%triaaa input", triaaa_r12, triaaa_r13, triaaa_r23
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
     write(log_msg, '(A, F15.5)'), "jpca15%triaaa.ener", ener
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
     write(log_msg, '(A, 3F15.5)'), "jpca15%triaaa.der_3d", der_3d
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
     do i = 1, size(der_3d)
         call check(error, der_3d(i), triaaa_der_3d(i), thr=tol)
     end do
   end subroutine test_triaaa_der
 
   subroutine test_diat12_ener(error)
-    !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    integer :: input, output, stat
     real(kind=wp) :: diat12_r = 4.9406564584124654E-3
     real(kind=wp) :: diat12_ener = 176.359788
     real(kind=wp) :: diat12_der = -35951.61226
     real(kind=wp) :: ener, der
     real(kind=wp) :: tol = 0.01_wp
     character(len=100) :: log_msg
-    open(newunit=input, status="scratch")
-    write(input, '(a)') "This is a valid test"
-    rewind(input)
 
-    open(newunit=output, status="scratch")
     call diat12(diat12_r, ener, der)
-    close(input)
 
-    rewind(output)
-    !call get_line(output, line, stat)
-    close(output)
-
-    ! write(log_msg, '(A, F15.5)'), "jpca15%diat12 input:", diat12_r
-    ! call global_logger%log_warning(log_msg)
-    ! write(log_msg, '(A, F15.5)'), "jpca15%diat12.ener", ener
-    ! call global_logger%log_warning(log_msg)
-    ! write(log_msg, '(A, F15.5)'), "jpca15%diat12.der", der
-    ! call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F15.5)'), "jpca15%diat12 input:", diat12_r
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F15.5)'), "jpca15%diat12.ener", ener
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F15.5)'), "jpca15%diat12.der", der
+    call global_logger%log_warning(log_msg)
 
     call check(error, ener, diat12_ener, thr=tol)
   end subroutine test_diat12_ener
@@ -130,31 +99,21 @@ contains
   subroutine test_diat12_der(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    integer :: input, output, stat
     real(kind=wp) :: diat12_r = 4.9406564584124654E-3
     real(kind=wp) :: diat12_ener = 176.359788
     real(kind=wp) :: diat12_der = -35951.61226
     real(kind=wp) :: ener, der
     real(kind=wp) :: tol = 0.01_wp
     character(len=100) :: log_msg
-    open(newunit=input, status="scratch")
-    write(input, '(a)') "This is a valid test"
-    rewind(input)
 
-    open(newunit=output, status="scratch")
     call diat12(diat12_r, ener, der)
-    close(input)
-
-    rewind(output)
-    !call get_line(output, line, stat)
-    close(output)
 
     write(log_msg, '(A, F15.5)'), "jpca15%diat12 input:", diat12_r
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
     write(log_msg, '(A, F15.5)'), "jpca15%diat12.ener", ener
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
     write(log_msg, '(A, F15.5)'), "jpca15%diat12.der", der
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
 
     call check(error, der, diat12_der, thr=tol)
   end subroutine test_diat12_der
@@ -162,31 +121,21 @@ contains
   subroutine test_jpca15_subr_e(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    integer :: input, output, stat
     real(kind=wp), DIMENSION(3) :: ser =  (/0.0028739_wp, 0.0098706_wp, 0.0064505_wp/)
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: e
     character(len=100) :: log_msg
     real(kind=wp) ::               jpca15_e = 14331.821639646125_wp
     real(kind=wp) :: tol = 0.01_wp
-    open(newunit=input, status="scratch")
-    write(input, '(a)') "This is a valid test"
-    rewind(input)
 
-    open(newunit=output, status="scratch")
     call comp_pe(ser, e, der_3d)
-    close(input)
 
-    rewind(output)
-    !call get_line(output, line, stat)
-    close(output)
-
-    ! write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15 input:", ser
-    ! call global_logger%log_warning(log_msg)
-    ! write(log_msg, '(A, F15.5)'), "jpca15%jpca15.e", e
-    ! call global_logger%log_warning(log_msg)
-    ! write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15.der_3d", der_3d
-    ! call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15 input:", ser
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F15.5)'), "jpca15%jpca15.e", e
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15.der_3d", der_3d
+    call global_logger%log_warning(log_msg)
 
     call check(error, e, jpca15_e, thr=tol)
   end subroutine test_jpca15_subr_e
@@ -194,7 +143,6 @@ contains
   subroutine test_jpca15_subr_der(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    integer :: input, output, stat
     real(kind=wp), DIMENSION(3) :: ser =  (/0.0028739_wp, 0.0098706_wp, 0.0064505_wp/)
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: e
@@ -202,65 +150,24 @@ contains
     real(kind=wp) :: tol = 0.01_wp
     integer :: i
     character(len=100) :: log_msg
-    open(newunit=input, status="scratch")
-    write(input, '(a)') "This is a valid test"
-    rewind(input)
 
-    open(newunit=output, status="scratch")
     call comp_pe(ser, e, der_3d)
-    close(input)
-
-    rewind(output)
-    !call get_line(output, line, stat)
-    close(output)
 
     write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15 input:", ser
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
     write(log_msg, '(A, F15.5)'), "jpca15%jpca15.e", e
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
     write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15.der", der_3d
-    ! call global_logger%log_warning(log_msg)
+    call global_logger%log_warning(log_msg)
 
     do i = 1, size(der_3d)
         call check(error, der_3d(i), jpca15_der_3d(i), thr=tol)
     end do
   end subroutine test_jpca15_subr_der
 
-!   function test_jpca15_comp_pe_jiggle(ser, atom_num, dimn, delta) result(force)
-  !  !> Error handling
-  !  real(kind=wp), DIMENSION(3), intent(in) :: ser
-  !  real(kind=wp), intent in :: delta, force
-  !  real(kind=wp), DIMENSION(3) :: ser_delta
-  !  real(kind=wp), DIMENSION(3) :: der_3d, der_delta_3d
-  !  real(kind=wp) :: e, e_delta
-  !  character(len=100) :: log_msg
-  !  call comp_pe(ser, e, der_3d)
-  !  write(log_msg, '(A, F12.5)'), "jpca15%comp_pe delta:", delta
-  !  call global_logger%log_warning(log_msg)
-  !  write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe ser:", ser
-  !  call global_logger%log_warning(log_msg)
-  !  write(log_msg, '(A, F12.5)'), "jpca15%comp_pe e:", e
-  !  call global_logger%log_warning(log_msg)
-  !  write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe der_3d", der_3d
-  !  call global_logger%log_warning(log_msg)
-  !  ser_delta =  (/ser(1), ser(2), ser(3)/)
-  !  ser_delta(atom_num) = ser_delta(atom_num) + delta
-  !  call comp_pe(ser_delta, e_delta, der_delta_3d)
-  !  write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe ser_delta:", ser_delta
-  !  call global_logger%log_warning(log_msg)
-  !  write(log_msg, '(A, F12.5)'), "jpca15%comp_pe e_delta:", e_delta
-  !  call global_logger%log_warning(log_msg)
-  !  write(log_msg, '(A, 3F12.5)'), "jpca15%comp_pe der_delta_3d", der_delta_3d
-  !  call global_logger%log_warning(log_msg)
-  !  write(log_msg, '(A, 3F12.5)'), "Potential Energy on A in x:", (e_delta - e) / delta
-  !  call global_logger%log_warning(log_msg)
-  !  call check(error, (e_delta - e) / delta, der_3d(i), thr=tol)
-  !end function test_jpca15_comp_pe_jiggle
-
   subroutine test_jpca15_comp_pe_jiggle_Ax(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    integer :: input, output, stat
     real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
     real(kind=wp) :: delta = 0.0001_wp
     real(kind=wp), DIMENSION(3) :: ser_delta
