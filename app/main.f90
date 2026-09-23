@@ -20,23 +20,23 @@ program main
   r13 = norm2(p1 - p3)
   r23 = norm2(p2 - p3)
 
-  print *, "diat12 input: ", r12
+  print *, "diat12: r12 -> ", r12
   call diat12(r12, ener, der_1d)
-  print *, "diat12%ener: ", ener
-  print *, "diat12%der_1d: ", der_1d
+  print *, "diat12: ener <- ", ener
+  print *, "diat12: der_1d <- ", der_1d
   print *, ""
 
   call triaaa(r12, r13, r23, ener, der_3d)
-  print *, "triaaa input: ", r12, r13, r23
-  print *, "triaaa%ener: ", ener
-  print *, "triaaa%der_3d: ", der_3d
+  print *, "triaaa: r12, r13, r23 -> ", r12, r13, r23
+  print *, "triaaa: ener <- ", ener
+  print *, "triaaa: der_3d <- ", der_3d
   print *, ""
 
   ser = (/r12, r13, r23/)
   call comp_pe(ser, e, der_3d)
-  print *, "comp_pe input: ", ser
-  print *, "comp_pe%e: ", e
-  print *, "comp_pe%der_3d: ", der_3d
+  print *, "comp_pe: ser -> ", ser
+  print *, "comp_pe: e <- ", e
+  print *, "comp_pe: der_3d <- ", der_3d
   print *, ""
 
 end program main

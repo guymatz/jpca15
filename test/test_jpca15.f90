@@ -19,7 +19,7 @@ contains
     !  for logging
     character(len=100) :: log_msg
     call global_logger%configure(indent=.true., max_width=100)
-    call global_logger%configure(level = ALL_LEVEL)
+    call global_logger%configure(level = NONE_LEVEL)
 
     testsuite = [&
                   new_unittest("diat12_der", test_diat12_der), &
@@ -270,7 +270,6 @@ contains
     real(kind=wp) :: tol = 0.01_wp
     integer :: i
     character(len=100) :: log_msg
-!    open(newunit=input, status="scratch")
 
     call comp_pe(ser, e, der_3d)
     write(log_msg, '(A, F15.5)'), "jpca15%comp_pe delta:", delta
@@ -293,7 +292,9 @@ contains
 
     write(log_msg, '(A, 3F15.9)'), "Potential Energy on A in x:", (e_delta - e) / delta
     call global_logger%log_warning(log_msg)
+    ! I *think* these two should be equal!!!
     call check(error, (e_delta - e) / delta, expected_potential_energy, thr=tol)
+    call check(error, (der_delta_3d(1) - der_3d(1)) / delta, expected_potential_energy, thr=tol)
   end subroutine test_jpca15_comp_pe_jiggle_Ax
 
 end module test_jpca15
