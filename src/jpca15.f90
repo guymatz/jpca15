@@ -16,14 +16,18 @@ module jpca15
       r13=ser(2)
       r23=ser(3)
       call diat12(r12,e12,d12)
+      ! print *, "jpca15 - diat12(r12,e12,d12): ", r12,e12,d12
       call diat12(r13,e13,d13)
+      ! print *, "jpca15 - diat12(r13,e13,d13): ", r13,e13,d13
       call diat12(r23,e23,d23)
+      ! print *, "jpca15 - diat12(r23,e23,d23): ", r23,e23,d23
       call triaaa(r12,r13,r23,e123,der)
       e=e12+e13+e23+e123
       e=(e+0.1728d0)*27.21138386d0
       der(1)=d12+der(1)
       der(2)=d13+der(2)
       der(3)=d23+der(3)
+      ! print *, "jpca15 <- ", e, der
       return
    end subroutine comp_pe
    ! ************************************************************************
@@ -37,6 +41,7 @@ module jpca15
       implicit real*8 (a-h,o-z)
       integer :: i
       dimension cf(  6)
+      ! print *, "r: ", r
       data cf(  1)/0.877523796221D+00/
       data cf(  2)/-.357378041560D+01/
       data cf(  3)/0.283330806286D+02/
@@ -57,12 +62,13 @@ module jpca15
          der=der+(i-1)*cf(i)*dux
          dux=dux*eux
          ener=ener+cf(i)*dux
+      ! print *, "diat12 - ener: ", ener
    1  continue
       der=der*(1.d0-vex1*r)*cux
       der=der-cf(1)*(vex2+aux)*bux
-      !print *, "diat12 - r:", r
-      !print *, "diat12 - ener", ener
-      !print *, "diat12 - der", der
+      ! print *, "diat12 - r:", r
+      ! print *, "diat12 - ener", ener
+      ! print *, "diat12 - der", der
       return
    end subroutine diat12
    ! *************************************************************
@@ -185,7 +191,7 @@ module jpca15
       der23 = 0.d0
       do 2 l=1, 43
          if (i4(l).eq.1) then
-            aur=f12(i1(l))*f13(i2(l))*f23(i3(l))
+            aux=f12(i1(l))*f13(i2(l))*f23(i3(l))
             dux12=i1(l)*f12(i1(l)-1)*f13(i2(l))*f23(i3(l))
             dux13=i2(l)*f12(i1(l))*f13(i2(l)-1)*f23(i3(l))
             dux23=i3(l)*f12(i1(l))*f13(i2(l))*f23(i3(l)-1)
