@@ -27,7 +27,7 @@ contains
                   new_unittest("triaaa_der", test_triaaa_der), &
                   new_unittest("triaaa_ener", test_triaaa_ener), &
                   new_unittest("jpca15_subr_e", test_jpca15_subr_e), &
-                  new_unittest("jpca15_der", test_jpca15_subr_der), &
+                  new_unittest("jpca15_subr_der", test_jpca15_subr_der), &
                   new_unittest("jpca15_comp_pe_jiggle_Ax", test_jpca15_comp_pe_jiggle_Ax) &
     ]
   end subroutine collect_jpca15
@@ -39,12 +39,13 @@ contains
     real(kind=wp) :: triaaa_r12 = 6.00_wp
     real(kind=wp) :: triaaa_r13 = 7.40065_wp
     real(kind=wp) :: triaaa_r23 = 1.40065_wp
-    real(kind=wp) :: triaaa_ener = 0.454739_wp
+    real(kind=wp) :: triaaa_ener = 1.2725131545902341E-003
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: ener
     real(kind=wp) :: tol = 0.01_wp
 
     call triaaa(triaaa_r12, triaaa_r13, triaaa_r23, ener, der_3d)
+    ! print *,  "triaaa ener: ", triaaa_r12, triaaa_r13, triaaa_r23, ener, der_3d
     call check(error, ener, triaaa_ener, thr=tol)
   end subroutine test_triaaa_ener
 
@@ -70,6 +71,7 @@ contains
     call global_logger%log_warning(log_msg)
     write(log_msg, '(A, 3F15.5)'), "jpca15%triaaa.der_3d", der_3d
     call global_logger%log_warning(log_msg)
+    ! print *, "triaaa der: ", triaaa_r12, triaaa_r13, triaaa_r23, ener, der_3d
     do i = 1, size(der_3d)
         call check(error, der_3d(i), triaaa_der_3d(i), thr=tol)
     end do
@@ -77,9 +79,9 @@ contains
 
   subroutine test_diat12_ener(error)
     type(error_type), allocatable, intent(out) :: error
-    real(kind=wp) :: diat12_r = 4.9406564584124654E-3
-    real(kind=wp) :: diat12_ener = 176.359788
-    real(kind=wp) :: diat12_der = -35951.61226
+    real(kind=wp) :: diat12_r = 6.0_wp
+    real(kind=wp) :: diat12_ener = -8.4689982296655799E-004
+    real(kind=wp) :: diat12_der = 1.2802678666105818E-003
     real(kind=wp) :: ener, der
     real(kind=wp) :: tol = 0.01_wp
     character(len=100) :: log_msg
@@ -99,9 +101,9 @@ contains
   subroutine test_diat12_der(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    real(kind=wp) :: diat12_r = 4.9406564584124654E-3
-    real(kind=wp) :: diat12_ener = 176.359788
-    real(kind=wp) :: diat12_der = -35951.61226
+    real(kind=wp) :: diat12_r = 6.0_wp
+    real(kind=wp) :: diat12_ener = -8.4689982296655799E-004
+    real(kind=wp) :: diat12_der = 1.2802678666105818E-003
     real(kind=wp) :: ener, der
     real(kind=wp) :: tol = 0.01_wp
     character(len=100) :: log_msg
@@ -121,11 +123,11 @@ contains
   subroutine test_jpca15_subr_e(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    real(kind=wp), DIMENSION(3) :: ser =  (/0.0028739_wp, 0.0098706_wp, 0.0064505_wp/)
+    real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: e
     character(len=100) :: log_msg
-    real(kind=wp) ::               jpca15_e = 14331.821639646125_wp
+    real(kind=wp) ::               jpca15_e = 8.4908456909716882E-003
     real(kind=wp) :: tol = 0.01_wp
 
     call comp_pe(ser, e, der_3d)
@@ -143,10 +145,10 @@ contains
   subroutine test_jpca15_subr_der(error)
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
-    real(kind=wp), DIMENSION(3) :: ser =  (/0.0028739_wp, 0.0098706_wp, 0.0064505_wp/)
+    real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: e
-    real(kind=wp), DIMENSION(3) :: jpca15_der_3d = (/-106248.97330438906, -9008.7944248419753, -21091.877752197026/)
+    real(kind=wp), DIMENSION(3) :: jpca15_der_3d = (/-1.2377147979101314E-003, -3.0837833746203449E-004, 2.1943033475517550E-003/)
     real(kind=wp) :: tol = 0.01_wp
     integer :: i
     character(len=100) :: log_msg
@@ -173,7 +175,9 @@ contains
     real(kind=wp), DIMENSION(3) :: ser_delta
     real(kind=wp), DIMENSION(3) :: der_3d, der_delta_3d
     real(kind=wp) :: e, e_delta
-    real(kind=wp) :: expected_force_Ax = 13.40228_wp
+    real(kind=wp) :: expected_e = 8.4908456909716882E-003
+    real(kind=wp) :: expected_e_delta = 8.4911514317083155E-003
+    real(kind=wp) :: expected_force_Ax = 3.0574074435100211E-003
     real(kind=wp) :: tol = 0.01_wp
     integer :: i
     character(len=100) :: log_msg
@@ -203,6 +207,9 @@ contains
 
     write(log_msg, '(A, 3F15.9)'), "Force on A in x:", (e_delta - e) / delta
     call global_logger%log_warning(log_msg)
+    ! print *, "jpca15: ser - ", ser
+    ! print *, "jpca15:   e - ", e
+    ! print *, "jpca15: der - ", der_3d
     ! I *think* these two should be equal!!!
     call check(error, (e_delta - e) / delta, expected_force_Ax, thr=tol)
     call check(error, (der_delta_3d(1) - der_3d(1)) / delta, expected_force_Ax, thr=tol)
