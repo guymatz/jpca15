@@ -5,8 +5,10 @@ program main
 
   ! for comp_pe
   real(KIND=wp), dimension(3) :: p1, p2, p3
-  real(KIND=wp), dimension(3) :: ser, der_3d
-  real(KIND=wp), dimension(3) :: ser_delta, der_3d_delta
+  real(KIND=wp), dimension(3) :: ser = (/0.0_wp, 0.0_wp, 0.0_wp/)
+  real(KIND=wp), dimension(3) :: der_3d = (/0.0_wp, 0.0_wp, 0.0_wp/)
+  real(KIND=wp), dimension(3) :: ser_delta = (/0.0_wp, 0.0_wp, 0.0_wp/)
+  real(KIND=wp), dimension(3) :: der_3d_delta = (/0.0_wp, 0.0_wp, 0.0_wp/)
   real(KIND=wp) :: e, e_delta
   real(KIND=wp) :: delta = 0.001
   ! for diat12
