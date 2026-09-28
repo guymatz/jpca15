@@ -28,6 +28,8 @@ contains
                   new_unittest("triaaa_ener", test_triaaa_ener), &
                   new_unittest("jpca15_subr_e", test_jpca15_subr_e), &
                   new_unittest("jpca15_subr_der", test_jpca15_subr_der), &
+                  new_unittest("jpca15_subr_e_delta", test_jpca15_subr_e_delta), &
+                  new_unittest("jpca15_subr_der_delta", test_jpca15_subr_der_delta), &
                   new_unittest("jpca15_comp_pe_jiggle_Ax", test_jpca15_comp_pe_jiggle_Ax) &
     ]
   end subroutine collect_jpca15
@@ -39,7 +41,7 @@ contains
     real(kind=wp) :: triaaa_r12 = 6.00_wp
     real(kind=wp) :: triaaa_r13 = 7.40065_wp
     real(kind=wp) :: triaaa_r23 = 1.40065_wp
-    real(kind=wp) :: triaaa_ener = 1.2725131545902341E-003
+    real(kind=wp) :: triaaa_ener = 1.2725131085470701E-003
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: ener
     real(kind=wp) :: tol = 0.01_wp
@@ -57,7 +59,7 @@ contains
     real(kind=wp) :: triaaa_r12 = 6.00_wp
     real(kind=wp) :: triaaa_r13 = 7.40065_wp
     real(kind=wp) :: triaaa_r23 = 1.40065_wp
-    real(kind=wp), DIMENSION(3) :: triaaa_der_3d =  (/-0.123771E-002_wp, -0.308377E-003_wp, 0.219437E-002_wp/)
+    real(kind=wp), DIMENSION(3) :: triaaa_der_3d =  (/-1.2377147564350030E-003_wp, -3.0837833608273201E-004_wp, 2.1943034147109829E-003_wp/)
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: ener
     real(kind=wp) :: tol = 0.01_wp
@@ -127,7 +129,7 @@ contains
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: e
     character(len=100) :: log_msg
-    real(kind=wp) ::               jpca15_e = 8.4908456909716882E-003
+    real(kind=wp) ::               jpca15_e = 8.4908441566508008E-003
     real(kind=wp) :: tol = 0.01_wp
 
     call comp_pe(ser, e, der_3d)
@@ -148,7 +150,7 @@ contains
     real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
     real(kind=wp), DIMENSION(3) :: der_3d
     real(kind=wp) :: e
-    real(kind=wp), DIMENSION(3) :: jpca15_der_3d = (/-1.2377147979101314E-003, -3.0837833746203449E-004, 2.1943033475517550E-003/)
+    real(kind=wp), DIMENSION(3) :: jpca15_der_3d = (/4.2553110175578808E-005_wp, -1.5491816459298777E-004_wp, 2.4644550671862196E-003_wp/)
     real(kind=wp) :: tol = 0.01_wp
     integer :: i
     character(len=100) :: log_msg
@@ -166,6 +168,57 @@ contains
         call check(error, der_3d(i), jpca15_der_3d(i), thr=tol)
     end do
   end subroutine test_jpca15_subr_der
+
+  subroutine test_jpca15_subr_e_delta(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
+    real(kind=wp), DIMENSION(3) :: der_3d
+    real(kind=wp) :: e
+    character(len=100) :: log_msg
+    real(kind=wp) ::               jpca15_e = 8.4938997387927796E-003
+    real(kind=wp) :: tol = 0.01_wp
+    real(KIND=wp) :: delta = 0.001_wp
+    ser =  (/ser(1) - delta, ser(2) - delta, ser(3)/)
+
+    call comp_pe(ser, e, der_3d)
+
+    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15 delta input:", ser
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F15.5)'), "jpca15%jpca15.e delta", e
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15.der_3d delta", der_3d
+    call global_logger%log_warning(log_msg)
+
+    call check(error, e, jpca15_e, thr=tol)
+  end subroutine test_jpca15_subr_e_delta
+
+  subroutine test_jpca15_subr_der_delta(error)
+    !> Error handling
+    type(error_type), allocatable, intent(out) :: error
+    real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
+    real(kind=wp), DIMENSION(3) :: der_3d
+    real(kind=wp) :: e
+    real(kind=wp), DIMENSION(3) :: jpca15_der_3d = (/4.2894599476641856E-005_wp, -1.5511065145381889E-004_wp, 2.4666392892836665E-003_wp/)
+    real(kind=wp) :: tol = 0.01_wp
+    integer :: i
+    character(len=100) :: log_msg
+    real(KIND=wp) :: delta = 0.001_wp
+    ser =  (/ser(1) - delta, ser(2) - delta, ser(3)/)
+
+    call comp_pe(ser, e, der_3d)
+
+    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15 input:", ser
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, F15.5)'), "jpca15%jpca15.e", e
+    call global_logger%log_warning(log_msg)
+    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15.der", der_3d
+    call global_logger%log_warning(log_msg)
+
+    do i = 1, size(der_3d)
+        call check(error, der_3d(i), jpca15_der_3d(i), thr=tol)
+    end do
+  end subroutine test_jpca15_subr_der_delta
 
   subroutine test_jpca15_comp_pe_jiggle_Ax(error)
     !> Error handling

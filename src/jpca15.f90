@@ -85,7 +85,7 @@ module jpca15
       integer :: i, l
       integer :: i1(   43),i2(   43),i3(   43),i4(   43)
       real(kind=wp) :: cf(   43)
-      real f12(0: 8),f13(0: 8),f23(0: 8)
+      real(KIND=wp) f12(0: 8),f13(0: 8),f23(0: 8)
       real(KIND=wp) :: r12, r13, r23, ener
       real(kind=wp) :: der(3)
       data cf(  1)/0.1870875561429140D+02/
