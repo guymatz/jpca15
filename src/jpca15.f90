@@ -1,4 +1,5 @@
 module jpca15
+   use kinds, ONLY: wp => dp
    contains
    ! ************************************************************************
    subroutine comp_pe(ser, e, der)
@@ -39,6 +40,7 @@ module jpca15
    ! *     emax =      0.32188730 kcal/mol
    ! ************************************************************************
       implicit real*8 (a-h,o-z)
+      real(KIND=wp) :: r, ener, der
       integer :: i
       dimension cf(  6)
       ! print *, "r: ", r
@@ -66,9 +68,9 @@ module jpca15
    1  continue
       der=der*(1.d0-vex1*r)*cux
       der=der-cf(1)*(vex2+aux)*bux
-      ! print *, "diat12 - r:", r
-      ! print *, "diat12 - ener", ener
-      ! print *, "diat12 - der", der
+      !print *, "jpca15::diat12 - r:", r
+      !print *, "jpca15::diat12 - ener", ener
+      !print *, "jpca15::diat12 - der", der
       return
    end subroutine diat12
    ! *************************************************************
@@ -79,13 +81,13 @@ module jpca15
    ! *     rms =      1.75035364 kcal/mol
    ! *     emax =     12.92836324 kcal/mol
    ! *************************************************************
-      use, intrinsic :: iso_fortran_env, only: real64
       implicit real*8(a-h,o-z)
       integer :: i, l
       integer :: i1(   43),i2(   43),i3(   43),i4(   43)
-      real(kind=real64) :: cf(   43)
+      real(kind=wp) :: cf(   43)
       real f12(0: 8),f13(0: 8),f23(0: 8)
-      real(kind=real64) :: der(3)
+      real(KIND=wp) :: r12, r13, r23, ener
+      real(kind=wp) :: der(3)
       data cf(  1)/0.1870875561429140D+02/
       data i1(  1)/ 0/,i2(  1)/ 1/,i3(  1)/ 1/,i4(  1)/ 3/
       data cf(  2)/-.5733180030623026D+02/
