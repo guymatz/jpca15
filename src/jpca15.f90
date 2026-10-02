@@ -12,23 +12,27 @@ module jpca15
    ! ************************************************************************
    ! srampino adapts to standard ABC
       implicit real * 8 (a-h,o-z)
-      dimension ser(3), der(3)
-      r12=ser(1)
-      r13=ser(2)
-      r23=ser(3)
+      real(KIND=wp), dimension(3), INTENT(in) :: ser
+      real(KIND=wp), dimension(3), INTENT(out) :: der
+      real(KIND=wp), INTENT(out) :: e
+      real(KIND=wp) :: r12, r13, r23
+      r12 = ser(1)
+      r13 = ser(2)
+      r23 = ser(3)
       call diat12(r12,e12,d12)
-      ! print *, "jpca15 - diat12(r12,e12,d12): ", r12,e12,d12
       call diat12(r13,e13,d13)
-      ! print *, "jpca15 - diat12(r13,e13,d13): ", r13,e13,d13
       call diat12(r23,e23,d23)
-      ! print *, "jpca15 - diat12(r23,e23,d23): ", r23,e23,d23
       call triaaa(r12,r13,r23,e123,der)
       e=e12+e13+e23+e123
       e=(e+0.1728d0)*27.21138386d0
       der(1)=d12+der(1)
       der(2)=d13+der(2)
       der(3)=d23+der(3)
-      ! print *, "jpca15 <- ", e, der
+
+      ! print *, "TT jpca15 ser -> ", ser
+      ! print *, "TT jpca15 der <- ", der
+      ! print *, "TT jpca15   e <- ", e
+
       return
    end subroutine comp_pe
    ! ************************************************************************
@@ -68,9 +72,10 @@ module jpca15
    1  continue
       der=der*(1.d0-vex1*r)*cux
       der=der-cf(1)*(vex2+aux)*bux
-      !print *, "jpca15::diat12 - r:", r
-      !print *, "jpca15::diat12 - ener", ener
-      !print *, "jpca15::diat12 - der", der
+
+      ! print *, "TT diat12: in ", r
+      ! print *, "TT diat12: out ", ener, der
+
       return
    end subroutine diat12
    ! *************************************************************
@@ -252,11 +257,13 @@ module jpca15
       der(1)=der12*(1.d0-vex1*r12)*dexp(-vex1*r12)
       der(2)=der13*(1.d0-vex1*r13)*dexp(-vex1*r13)
       der(3)=der23*(1.d0-vex1*r23)*dexp(-vex1*r23)
-      !print *, "triaaa - r12:", r12
-      !print *, "triaaa - r13:", r13
-      !print *, "triaaa - r23:", r23
-      !print *, "triaaa - ener", ener
-      !print *, "triaaa - der", der
+
+      ! print *, "TT triaaa - r12:", r12
+      ! print *, "TT triaaa - r13:", r13
+      ! print *, "TT triaaa - r23:", r23
+      ! print *, "TT triaaa - ener", ener
+      ! print *, "TT triaaa - der", der
+
       return
    end subroutine triaaa
  end module jpca15

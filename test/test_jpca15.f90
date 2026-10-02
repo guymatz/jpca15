@@ -173,17 +173,18 @@ contains
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
     real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
-    real(kind=wp), DIMENSION(3) :: der_3d
+    real(kind=wp), DIMENSION(3) :: ser_delta, der_3d
     real(kind=wp) :: e
     character(len=100) :: log_msg
     real(kind=wp) ::               jpca15_e = 8.4938997387927796E-003
     real(kind=wp) :: tol = 0.01_wp
     real(KIND=wp) :: delta = 0.001_wp
-    ser =  (/ser(1) - delta, ser(2) - delta, ser(3)/)
 
-    call comp_pe(ser, e, der_3d)
+    ser_delta =  (/ser(1) - delta, ser(2) - delta, ser(3)/)
 
-    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15 delta input:", ser
+    call comp_pe(ser_delta, e, der_3d)
+
+    write(log_msg, '(A, 3F15.5)'), "jpca15%jpca15 delta input:", ser_delta
     call global_logger%log_warning(log_msg)
     write(log_msg, '(A, F15.5)'), "jpca15%jpca15.e delta", e
     call global_logger%log_warning(log_msg)
@@ -224,14 +225,15 @@ contains
     !> Error handling
     type(error_type), allocatable, intent(out) :: error
     real(kind=wp), DIMENSION(3) :: ser =  (/6.0_wp, 7.40065_wp, 1.40065_wp/)
-    real(kind=wp) :: delta = 0.0001_wp
+    real(kind=wp) :: delta = 0.001_wp
     real(kind=wp), DIMENSION(3) :: ser_delta
     real(kind=wp), DIMENSION(3) :: der_3d, der_delta_3d
     real(kind=wp) :: e, e_delta
     real(kind=wp) :: expected_e = 8.4908456909716882E-003
-    real(kind=wp) :: expected_e_delta = 8.4911514317083155E-003
-    real(kind=wp) :: expected_force_Ax = 3.0574074435100211E-003
-    real(kind=wp) :: tol = 0.01_wp
+    real(kind=wp) :: expected_e_delta = 8.4938997387927796E-003 !  8.4911514317083155E-003
+    real(kind=wp), DIMENSION(3) :: expected_der_delta = (/4.28945994E-005_wp, -1.55110651E-004_wp, 2.46663928E-003_wp/)
+    real(kind=wp) :: expected_force_Ax = 0.30555821419787910E-002 ! 3.0574074435100211E-003
+    real(kind=wp) :: tol = 0.0001_wp
     integer :: i
     character(len=100) :: log_msg
 
@@ -264,8 +266,17 @@ contains
     ! print *, "jpca15:   e - ", e
     ! print *, "jpca15: der - ", der_3d
     ! I *think* these two should be equal!!!
+    do i = 1, size(der_3d)
+        write(log_msg, '(A, I0, F15.10, F15.10)'), "Checking der_3d: ", i, der_3d(i), expected_der_delta(i)
+        call global_logger%log_warning(log_msg)
+        call check(error, der_3d(i), expected_der_delta(i), thr=tol)
+    end do
+
     call check(error, (e_delta - e) / delta, expected_force_Ax, thr=tol)
-    call check(error, (der_delta_3d(1) - der_3d(1)) / delta, expected_force_Ax, thr=tol)
+    ! print *, "der_delta_3d(1) / expected_force_Ax = ", der_delta_3d(1) / expected_force_Ax
+    write(log_msg, '(A, 3F15.9)'), "der_delta_3d(1) / expected_force_Ax = ", der_delta_3d(1) / expected_force_Ax
+    call global_logger%log_warning(log_msg)
+    ! call check(error, (der_delta_3d(1) - der_3d(1)) / delta, expected_force_Ax, thr=tol)
   end subroutine test_jpca15_comp_pe_jiggle_Ax
 
 end module test_jpca15

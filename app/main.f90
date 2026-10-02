@@ -10,13 +10,14 @@ program main
   real(KIND=wp), dimension(3) :: ser_delta = (/0.0_wp, 0.0_wp, 0.0_wp/)
   real(KIND=wp), dimension(3) :: der_3d_delta = (/0.0_wp, 0.0_wp, 0.0_wp/)
   real(KIND=wp) :: e, e_delta
-  real(KIND=wp) :: delta = 0.001
+  real(KIND=wp) :: delta
   ! for diat12
   real(KIND=wp) :: r, der
   real(KIND=wp) :: ener
   ! for triaaa
   real(KIND=wp) :: r12, r13, r23
 
+  delta = 0.001_wp
   p1 = (/-6.0_wp,     0.0_wp, 0.0_wp/)
   p2 = (/ 0.0_wp,     0.0_wp, 0.0_wp/)
   p3 = (/ 1.40065_wp, 0.0_wp, 0.0_wp/)
@@ -43,7 +44,7 @@ program main
   print *, "comp_pe: der_3d <- ", der_3d
   print *, ""
 
-  ser_delta = (/r12 - delta, r13 - delta, r23/)
+  ser_delta = (/ser(1) - delta, ser(2) - delta, ser(3)/)
   call comp_pe(ser_delta, e_delta, der_3d_delta)
   print *, "comp_pe:        delta -> ",     delta
   print *, "comp_pe:    ser_delta -> ", ser_delta
