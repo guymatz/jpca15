@@ -9,6 +9,8 @@ program main
   real(KIND=wp), dimension(3) :: der_3d = (/0.0_wp, 0.0_wp, 0.0_wp/)
   real(KIND=wp), dimension(3) :: ser_delta = (/0.0_wp, 0.0_wp, 0.0_wp/)
   real(KIND=wp), dimension(3) :: der_3d_delta = (/0.0_wp, 0.0_wp, 0.0_wp/)
+  real(KIND=wp), dimension(3, 3) :: unit_vector
+  real(KIND=wp), dimension(3, 3) :: forces_3d
   real(KIND=wp) :: e, e_delta
   real(KIND=wp) :: delta
   ! for diat12
@@ -16,6 +18,7 @@ program main
   real(KIND=wp) :: ener
   ! for triaaa
   real(KIND=wp) :: r12, r13, r23
+  real(KIND=wp), DIMENSION(3) :: F_AB, F_AC, F_BC
 
   delta = 0.001_wp
   p1 = (/-6.0_wp,     0.0_wp, 0.0_wp/)
@@ -49,9 +52,32 @@ program main
   print *, "comp_pe:        delta -> ",     delta
   print *, "comp_pe:    ser_delta -> ", ser_delta
   print *, "comp_pe:      e_delta <- ", e_delta
-  print *, "comp_pe: der_3d_delta <- ", der_3d_delta
+  !print *, "comp_pe: der_3d_delta <- ", der_3d_delta
   print *, ""
 
-  print *, "Force e: ", (e_delta - e) / delta
-  print *, "Force der: ", (der_3d_delta - der_3d) / delta
+  ! force with finite difference using e
+  print *, "Force e Ax: ", (e_delta - e) / delta
+  print *, ""
+
+  ! Now get force using der
+  unit_vector(1, :) = (p1 - p2) / norm2(p1 - p2)
+  unit_vector(2, :) = (p1 - p3) / norm2(p1 - p3)
+  unit_vector(3, :) = (p2 - p3) / norm2(p2 - p3)
+  print *, "Unit Vector AB:", unit_vector(1, :)
+  print *, "Unit Vector AC:", unit_vector(2, :)
+  print *, "Unit Vector BC:", unit_vector(3, :)
+  F_AB = -1 * der_3d(1) * unit_vector(1, :)
+  F_AC = -1 * der_3d(2) * unit_vector(2, :)
+  F_BC = -1 * der_3d(3) * unit_vector(3, :)
+  print *, "Force AB      :", F_AB
+  print *, "Force AC      :", F_AC
+  print *, "Force BC      :", F_BC
+  print *, "Force sum     :", F_AB + F_AC + F_BC
+  forces_3d(1, :) = F_AB + F_AC
+  print *, "Force der A   :", forces_3d(1, :)
+  forces_3d(2, :) = -F_AB + F_BC
+  print *, "Force der B   :", forces_3d(2, :)
+  forces_3d(3, :) = -F_AC - F_BC
+  print *, "Force der C   :", forces_3d(3, :)
+  print *, "Force sum     :", forces_3d(1, :) + forces_3d(2, :) + forces_3d(3, :)
 end program main
